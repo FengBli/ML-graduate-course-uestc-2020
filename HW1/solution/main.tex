@@ -1,0 +1,132 @@
+\documentclass[a4paper, utf8]{ctexart}
+\usepackage[inner=2.0cm,outer=2.0cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{multirow}
+\usepackage{tabularx,ragged2e,booktabs,caption}
+\usepackage{bm}
+% \usepackage{hyperref}
+\usepackage{multirow}
+\usepackage{enumerate}
+
+\newcolumntype{C}[1]{>{\Centering}m{#1}}
+\renewcommand\tabularxcolumn[1]{C{#1}}
+
+\title{机器学习第一周作业}
+\author{68-冯柏淋 201921080330}
+\date{}
+
+\newenvironment{solution}
+{\color{blue} \paragraph{Solution.}}
+{\newline \qed}
+
+\begin{document}
+
+\maketitle
+
+1. 监督学习有哪些主要类型，并分别举一个例子说明。
+\begin{solution}
+    监督学习主要包括\textbf{分类}和\textbf{回归}。分类：例如垃圾邮件分类；回归：预测明日气温。
+\end{solution}
+
+2. 请说明在机器学习任务中，训练集，验证集和测试集的作用。
+\begin{solution}
+    训练集用于训练模型，求出模型参数取值；验证集用于确定模型的超参，选出最优模型；而测试集则用于评估最终模型的泛化能力。
+\end{solution}
+
+3. {\color{red} [PRML 1.39]} Consider two binary variables $x$ and $y$ having the joint distribution given in Table \ref{tab:t1}.
+
+\begin{table}[!h]
+\begin{center}
+\begin{tabular}{llll}
+                                       &                                & \multicolumn{2}{c}{$y$}                               \\ 
+\multicolumn{1}{l}{}                   & \multicolumn{1}{l|}{\textbf{}} & \multicolumn{1}{l}{0}   & \multicolumn{1}{l}{1}   \\ \cline{2-4} 
+\multicolumn{1}{l}{\multirow{2}{*}{$x$}} & \multicolumn{1}{l|}{0}         & \multicolumn{1}{l}{1/3} & \multicolumn{1}{l}{1/3} \\ 
+\multicolumn{1}{l}{}                   & \multicolumn{1}{l|}{1}         & \multicolumn{1}{l}{0}   & \multicolumn{1}{l}{1/3} \\ 
+\end{tabular}
+\caption{The joint distribution $p(x, y)$ for two binary variables $x$ and $y$ used in Exercise 1.39.} \label{tab:t1}
+\end{center}
+\end{table}
+
+Evaluate the following quantities.
+\begin{table}[!h]
+\begin{center}
+\begin{tabular}{C{1.75in} C{1.75in} C{1.75in}}
+\textbf{(a)} H{[}$ x ${]} & \textbf{(c)} H{[}$ y | x${]} & \textbf{(e)} H{[}$x, y ${]} \\
+\textbf{(b)} H{[}$ y ${]} & \textbf{(d)} H{[}$x | y ${]} & \textbf{(f)} I{[}$x, y ${]}
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{solution}
+\begin{itemize}
+
+    \item $H[x] = -\sum_i p(x_i)\ln p(x_i)$
+    \begin{itemize}
+    	\item[(a)] $H[x] = -\frac{2}{3}\ln\frac{2}{3} - \frac{1}{3}\ln\frac{1}{3}  = 0.802$
+    	\item[(b)] $H[x] = - \frac{1}{3}\ln\frac{1}{3} - \frac{2}{3}\ln\frac{2}{3} = 0.802$
+    \end{itemize}
+    \item $H[y|x] = -\sum_x \sum_y p(y, x) \ln p(y|x),\quad H[x,y] = H[y|x] + H[x]$
+    \begin{itemize}
+    	\item[(c)] $H[y|x] = -(\frac{1}{3}\ln\frac{1}{2} + \frac{1}{3}\ln\frac{1}{2} + \frac{1}{3}\ln 1) = -\frac{2}{3}\ln\frac{1}{2} = 0.462$
+    	\item[(d)] $H[x | y] = H[x, y] - H[y] = 1.264 - 0.802 = 0.462$
+    	\item[(e)] $H[x, y] = H[y|x] + H[x] = 0.462 + 0.802 = 1.264$
+    \end{itemize}
+    \item $I[x,y] = -\sum_y \sum_x p(x, y)\ln \frac{p(x)\cdot p(y)}{p(x,y)}$
+    \begin{itemize}
+    	\item[(f)] $I[x, y] = -\frac{4}{3}\ln \frac{2}{3} = 0.541$
+    \end{itemize}
+\end{itemize}
+    Above.
+\end{solution}
+
+4. 什么是共轭先验，它有什么好处，试举出几种分布参数的共轭先验。
+\begin{solution}
+    在贝叶斯概率理论中，如果后验分布与先验分布属于同一个分布族，则先验分布与后验分布称为一对共轭分布，其中的先验分布称为似然函数对应的\textbf{共轭先验}。共轭先验分布的提出主要是基于代数计算的便捷考虑，采用共轭先验则可以给出后验分布的闭式解，否则需要通过积分得到后验分布。
+    
+    例如，伯努利分布的共轭先验分布是Beta分布，泊松分布的共轭先验分布是Gamma分布；正态分布的共轭先验仍是正态分布等等。
+\end{solution}
+
+5. {\color{red} [PRML 1.11]} By setting the derivatives of the log likelihood function Eq.(\ref{eq:e1}) w.r.t. $\mu$ and $\sigma^2$ equal to zero, verify the results Eq.(\ref{eq:e2}) and Eq.(\ref{eq:e3}).
+
+\begin{align}
+\ln p(\textbf{x} |\mu, \sigma^2) &= - \frac{1}{2\sigma^2} \sum^N_{n=1}(x_n-\mu)^2 - \frac{N}{2}\ln \sigma^2 - \frac{N}{2}\ln(2\pi)  \label{eq:e1}\\
+\mu_{\text{ML}} &= \frac{1}{N}\sum^N_{n=1}x_n \label{eq:e2} \\
+\sigma^2_{\text{ML}} &= \frac{1}{N}\sum^N_{n=1}(x_n-\mu_{\text{ML}})^2	\label{eq:e3}
+\end{align}
+
+\begin{solution}
+    \begin{equation*}
+        l(\mu, \sigma^2 | \textbf{x}) = - \frac{1}{2\sigma^2} \sum^N_{n=1}(x_n-\mu)^2 - \frac{N}{2}\ln \sigma^2 - \frac{N}{2}\ln(2\pi)
+    \end{equation*}
+
+    令$\frac{\partial l(\mu, \sigma^2 | x)}{\partial \mu} = 0$，有：
+    $$-\frac{1}{2\sigma^2}\sum^N_{n=1}(2\mu-2x_n) = 0,$$
+    解得式(\ref{eq:e2})， $\mu_{\text{ML}} = \frac{1}{N}\sum^N_{n=1}x_n$.
+        
+    令$\frac{\partial l(\mu, \sigma^2 | x)}{\partial \sigma^2} = 0$，有：
+    $$\sum^N_{n=1}(x_n - \mu)^2 \frac{1}{(\sigma^2)^2} - \frac{N}{\sigma^2} = 0,$$
+    解得式(\ref{eq:e3})， $\sigma^2_{\text{ML}} = \frac{1}{N}\sum^N_{n=1}(x_n-\mu_{\text{ML}})^2$.
+\end{solution}
+
+
+6. {\color{red} [PRML 1.41]} Using the sum and product rules of probability, show that the mutual
+information $I(x,y)$ satisfies the following relation:
+ $$I[x,y] = H[x] - H[x|y] = H[y] - H[y|x].$$
+
+\begin{solution}
+    \begin{align*} 
+H[y] - H[y|x] &= -\int p(y)\ln p(y)\text{d}y +\iint P(y,x)\ln p(y|x)\text{d}y\text{d}x \\
+&= -\left[ \int p(y)\ln p(y)\text{d}y + \iint p(y,x)\ln{\color{red} \frac{p(x)}{p(x,y)}}\text{d}y\text{d}x \right ]\\
+&= -\left[ \int {\color{red}\left( \int p(x,y)\text{d}x  \right )} \cdot \ln p(y)\text{d}y + \iint p(y,x)\ln \frac{p(x)}{p(x,y)}\text{d}y\text{d}x \right ]\\
+&= -\left[ {\color{red}\iint  p(x,y) \ln p(y)\text{d}x  \text{d}y} + \iint p(y,x)\ln \frac{p(x)}{p(x,y)}\text{d}y\text{d}x \right ]\\
+&= -\left[ \iint \left(  p(x,y) \ln p(y)+  p(y,x)\ln \frac{p(x)}{p(x,y)}\right ) \text{d}y\text{d}x \right ]\\
+&=-\iint p(x, y) \ln \left(  \frac{p(x)p(y)}{p(x, y)} \right) \text{d}x \text{d}y\\
+&= I[x, y].
+\end{align*}
+$H[x] - H[x|y] = I[x,y]$同理可证.
+\end{solution}
+
+\end{document}
